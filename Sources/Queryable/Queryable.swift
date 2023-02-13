@@ -1,6 +1,3 @@
-public struct Queryable {
-    public private(set) var text = "Hello, World!"
-
-    public init() {
-    }
+public protocol Queryable: Codable {
+    static func field(_ path: PartialKeyPath<Self>) -> String?
 }
