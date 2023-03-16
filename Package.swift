@@ -5,11 +5,16 @@ import PackageDescription
 
 let package = Package(
     name: "Queryable",
+    platforms: [.iOS(.v16), .macOS(.v13)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "Queryable",
-            targets: ["Queryable"])
+            targets: ["Queryable"]),
+        .library(
+            name: "FirestoreQueryable",
+            targets: ["FirestoreQueryable"]
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/firebase/firebase-ios-sdk", branch: "master")
@@ -20,10 +25,23 @@ let package = Package(
             dependencies: []),
         .target(
             name: "FirestoreQueryable",
-            dependencies: ["Queryable"]
+            dependencies: [
+                "Queryable",
+                .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseFirestore", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseFirestoreSwift", package: "firebase-ios-sdk"),
+            ],
+            linkerSettings: [
+                .linkedLibrary("c++"),
+            ]
         ),
         .testTarget(
             name: "QueryableTests",
-            dependencies: ["Queryable"]),
+            dependencies: ["Queryable"]
+        ),
+        .testTarget(
+            name: "FirestoreQueryableTests",
+            dependencies: ["FirestoreQueryable"]
+        ),
     ]
 )
