@@ -8,13 +8,15 @@ public protocol Predicate<Model, Value> where Model: Queryable {
     func map<Mapper: PredicateMapper>(using mapper: Mapper) throws -> Mapper.MapRes
 }
 
-struct NotImplemented: Error {}
-
 extension Predicate {
     var type: Model.Type { Model.self }
     
-    public func field() -> String? {
-        Model.field(key)
+    public func field() throws -> String {
+        guard let field = Model.field(key) else {
+            throw FieldMissing(key: key)
+        }
+        
+        return field
     }
     
     public func map<Mapper: PredicateMapper>(using mapper: Mapper) throws -> Mapper.MapRes {

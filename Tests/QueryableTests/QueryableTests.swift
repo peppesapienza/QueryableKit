@@ -5,6 +5,8 @@ struct City: Queryable {
     let name: String
     let population: Int
     
+    let missingField: Bool = false
+    
     enum CodingKeys: String, CodingKey {
         case name
         case population = "populationCount"
@@ -28,9 +30,17 @@ struct SomeMapper: PredicateMapper {
 }
 
 final class QueryableTests: XCTestCase {
-    func test_givenFieldHasBeenSpecified_fieldMethod_shouldReturnsExpectedValue() throws {
-        XCTAssertEqual(Where(\City.name, equalTo: "").field(), "name")
-        XCTAssertEqual(Where(\City.population, equalTo: 0).field(), "populationCount")
+    func test_givenFieldHasBeenSpecified_then_fieldMethod_mustReturnsExpectedValue() throws {
+        XCTAssertEqual(try Where(\City.name, equalTo: "").field(), "name")
+        XCTAssertEqual(try Where(\City.population, equalTo: 0).field(), "populationCount")
+    }
+    
+    func test_givenMissingPath_then_fieldMethod_mustThrownException() throws {
+        XCTAssertThrowsError(try Where(\City.missingField, equalTo: false).field()) { error in
+            print(error.localizedDescription)
+            let error = try! XCTUnwrap(error as? FieldMissing<City>)
+            XCTAssertEqual(error.key, \.missingField)
+        }
     }
     
     func test_some() throws {
