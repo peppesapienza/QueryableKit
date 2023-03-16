@@ -19,10 +19,28 @@ struct City: Queryable {
     }
 }
 
-final class QueryableTests: XCTestCase {
+struct SomeMapper: PredicateMapper {
+    typealias MapRes = String
     
-    func pathShouldBeConvertedWhenExists() throws {
+    func map<Model, Value>(_ value: Where<Model, Value>) throws -> String {
+        "where"
+    }
+}
+
+final class QueryableTests: XCTestCase {
+    func test_givenFieldHasBeenSpecified_fieldMethod_shouldReturnsExpectedValue() throws {
         XCTAssertEqual(Where(\City.name, equalTo: "").field(), "name")
         XCTAssertEqual(Where(\City.population, equalTo: 0).field(), "populationCount")
+    }
+    
+    func test_some() throws {
+        let predicates: [any Predicate] = [
+            Where(\City.name, equalTo: ""),
+            Where(\City.population, equalTo: 0)
+        ]
+        
+        try predicates.forEach {
+            print(try $0.map(using: SomeMapper()))
+        }
     }
 }
