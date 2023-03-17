@@ -41,7 +41,8 @@ let package = Package(
         ),
         .testTarget(
             name: "FirestoreQueryableTests",
-            dependencies: ["FirestoreQueryable"]
-        ),
+            dependencies: ["FirestoreQueryable"],
+            resources: [.copy("secrets/secrets.json")]
+        )
     ]
 )

@@ -23,9 +23,14 @@ struct City: Queryable {
 
 struct SomeMapper: PredicateMapper {
     typealias MapRes = String
+    typealias Context = String
     
-    func map<Model, Value>(_ value: Where<Model, Value>) throws -> String {
+    func map<Model, Value>(_ predicate: Where<Model, Value>) throws -> String {
         "where"
+    }
+    
+    func map<Model, Value>(_ predicate: Where<Model, Value>, in context: inout Context) throws {
+        
     }
 }
 

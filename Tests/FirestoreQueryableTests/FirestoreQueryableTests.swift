@@ -1,38 +1,57 @@
 import XCTest
 import Queryable
+import FirebaseFirestoreSwift
+import FirebaseFirestore
+import FirebaseCore
 @testable import FirestoreQueryable
 
-struct City: Queryable {
+struct Person: Queryable {
     let name: String
-    let population: Int
+    let cityId: String
     
-    enum CodingKeys: String, CodingKey {
-        case name
-        case population = "populationCount"
-    }
-    
-    static func field(_ path: PartialKeyPath<City>) -> String? {
+    static func field(_ path: PartialKeyPath<Person>) -> String? {
         switch path {
         case \.name: return CodingKeys.name.stringValue
-        case \.population: return CodingKeys.population.stringValue
+        case \.cityId: return CodingKeys.cityId.stringValue
         default: return nil
         }
     }
 }
 
-final class MapperTests: XCTestCase {
+final class FirestoreIntegrationTests: XCTestCase {
     
-    func test_given() throws {
-        let predicates: [any Predicate] = [
-            Where(\City.name, equalTo: ""),
-            Where(\City.population, equalTo: 0)
-        ]
+    override func setUp() async throws {
+        try await super.setUp()
         
-        let mapper = FirestoreMapper()
+        let secrets = try Secrets.load()
         
-        try predicates.forEach { predicate in
-            try predicate.map(using: mapper)
-        }
+        let appOptions = FirebaseOptions(
+            googleAppID: secrets.googleAppID,
+            gcmSenderID: secrets.gcmSenderID
+        )
+        appOptions.apiKey = secrets.apiKey
+        appOptions.projectID = secrets.projectID
+        
+        FirebaseApp.configure(options: appOptions)
+    }
+    
+    func test_givenPersonExist_whenQueryByCityAndName_itMustReturnExpectedResult() async throws {
+        
+        let expectedName = "Giuseppe"
+        let expectedCityId = "tSF3KCNbKuwja68Y4nr1"
+        
+        let snap = try await Firestore.firestore().collection("people").query([
+            Where(\Person.cityId, equalTo: expectedCityId),
+            Where(\Person.name, equalTo: expectedName)
+        ])
+        .getDocuments()
+        
+        XCTAssertEqual(snap.documents.count, 1)
+        let doc = try XCTUnwrap(snap.documents.first)
+        let person = try doc.data(as: Person.self)
+        
+        XCTAssertEqual(person.name, expectedName)
+        XCTAssertEqual(person.cityId, expectedCityId)
     }
     
     

@@ -30,6 +30,10 @@ public struct Where<Model: Queryable, Value: Codable>: Predicate {
     public func map<Mapper>(using mapper: Mapper) throws -> Mapper.MapRes where Mapper: PredicateMapper {
         try mapper.map(self)
     }
+    
+    public func map<Mapper>(using mapper: Mapper, in context: inout Mapper.Context) throws where Mapper: PredicateMapper {
+        try mapper.map(self, in: &context)
+    }
 }
 
 public func ==<Model: Queryable, Value: Codable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {

@@ -6,8 +6,4 @@ public struct AnyOf<Model: Queryable, Value: Codable>: Predicate {
         self.key = key
         self.value = value
     }
-    
-    public func map<Mapper>(using mapper: Mapper) throws -> Mapper.MapRes where Mapper : PredicateMapper {
-        throw NotImplemented()
-    }
 }
