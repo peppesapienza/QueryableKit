@@ -26,12 +26,10 @@ struct SomeMapper: PredicateMapper {
     typealias Context = String
     
     func map<Model, Value>(_ predicate: Where<Model, Value>) throws -> String {
-        "where"
+        "\(try predicate.field()) \(predicate.operator.rawValue) \(predicate.value)"
     }
     
-    func map<Model, Value>(_ predicate: Where<Model, Value>, in context: inout Context) throws {
-        
-    }
+    func map<Model, Value>(_ predicate: Where<Model, Value>, in context: inout Context) throws {}
 }
 
 final class QueryableTests: XCTestCase {
@@ -48,14 +46,21 @@ final class QueryableTests: XCTestCase {
         }
     }
     
-    func test_some() throws {
+    func test_givenWherePredicates_testMapper_mustReturnsExpectedValue() throws {
         let predicates: [any Predicate] = [
-            Where(\City.name, equalTo: ""),
-            Where(\City.population, equalTo: 0)
+            Where(\City.name, equalTo: "someName"),
+            Where(\City.population, isGreaterThanOrEqualTo: 0)
         ]
         
-        try predicates.forEach {
-            print(try $0.map(using: SomeMapper()))
-        }
+        let someMapper = SomeMapper()
+        
+        XCTAssertEqual(
+            try predicates.map { try $0.map(using: someMapper) },
+            [
+                "name equalTo someName",
+                "populationCount isGreaterThanOrEqualTo 0"
+            ]
+        )
+        
     }
 }

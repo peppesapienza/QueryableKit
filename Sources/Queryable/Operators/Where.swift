@@ -1,5 +1,5 @@
 public struct Where<Model: Queryable, Value: Codable>: Predicate {
-    public enum Operator {
+    public enum Operator: String {
         case equalTo
         case isGreaterThan
         case isGreaterThanOrEqualTo
