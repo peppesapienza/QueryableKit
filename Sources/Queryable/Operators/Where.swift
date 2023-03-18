@@ -1,3 +1,16 @@
+/**
+ A `Where` is used to create a `Predicate` that represents a condition to be met by a certain key-value pair of a `Queryable` model.
+ 
+ - Parameters:
+ - Model: The queryable model.
+ - Value: The type of the property being compared.
+ 
+ Example:
+ creates a predicate where the `city` property of the `Person` model must be equal to "Melbourne".
+ ```
+ Where(\Person.city, equalTo: "Melbourne")
+ ```
+ */
 public struct Where<Model: Queryable, Value: Codable>: Predicate {
     public enum Operator: String {
         case equalTo
