@@ -10,6 +10,8 @@ struct FirestoreMapper: PredicateMapper {
         case .isLessThan: return .where(try predicate.field(), isLessThan: predicate.value)
         case .isGreaterThanOrEqualTo: return .whereField(try predicate.field(), isGreaterThanOrEqualTo: predicate.value)
         case .isLessThanOrEqualTo: return .where(try predicate.field(), isLessThanOrEqualTo: predicate.value)
+        case .isAnyOf: return .where(try predicate.field(), arrayContainsAny: predicate.value as! [Any])
+        case .contains: return .whereField(try predicate.field(), arrayContains: predicate.value)
         }
     }
     
@@ -29,6 +31,12 @@ struct FirestoreMapper: PredicateMapper {
             
         case .isLessThanOrEqualTo:
             context = context.whereField(try predicate.field(), isLessThanOrEqualTo: predicate.value)
+            
+        case .isAnyOf:
+            context = context.whereField(try predicate.field(), arrayContainsAny: predicate.value as! [Any])
+            
+        case .contains:
+            context = context.whereField(try predicate.field(), arrayContains: predicate.value)
         }
     }
 }

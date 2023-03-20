@@ -4,18 +4,21 @@ import XCTest
 struct City: Queryable {
     let name: String
     let population: Int
+    let suburbs: [String]
     
     let missingField: Bool = false
     
     enum CodingKeys: String, CodingKey {
         case name
         case population = "populationCount"
+        case suburbs
     }
     
     static func field(_ path: PartialKeyPath<City>) -> String? {
         switch path {
         case \.name: return CodingKeys.name.stringValue
         case \.population: return CodingKeys.population.stringValue
+        case \.suburbs: return CodingKeys.suburbs.stringValue
         default: return nil
         }
     }
@@ -49,7 +52,9 @@ final class QueryableTests: XCTestCase {
     func test_givenWherePredicates_testMapper_mustReturnsExpectedValue() throws {
         let predicates: [any Predicate] = [
             Where(\City.name, equalTo: "someName"),
-            Where(\City.population, isGreaterThanOrEqualTo: 0)
+            Where(\City.population, isGreaterThanOrEqualTo: 0),
+            Where(\City.suburbs, contains: "Melbourne"),
+            Where(\City.suburbs, isAnyOf: ["Melbourne"]),
         ]
         
         let someMapper = SomeMapper()
@@ -58,7 +63,9 @@ final class QueryableTests: XCTestCase {
             try predicates.map { try $0.map(using: someMapper) },
             [
                 "name equalTo someName",
-                "populationCount isGreaterThanOrEqualTo 0"
+                "populationCount isGreaterThanOrEqualTo 0",
+                "suburbs contains Melbourne",
+                "suburbs isAnyOf [\"Melbourne\"]"
             ]
         )
         

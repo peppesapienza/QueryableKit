@@ -18,6 +18,8 @@ public struct Where<Model: Queryable, Value: Codable>: Predicate {
         case isGreaterThanOrEqualTo
         case isLessThan
         case isLessThanOrEqualTo
+        case isAnyOf
+        case contains
     }
     
     public let key: PartialKeyPath<Model>
@@ -44,8 +46,14 @@ public struct Where<Model: Queryable, Value: Codable>: Predicate {
         self.init(key, .isLessThanOrEqualTo, value)
     }
     
-    init(_ key: KeyPath<Model, Value>, _ op: Operator, _ value: Value) {
+    public init(_ key: KeyPath<Model, Value>, _ op: Operator, _ value: Value) {
         self.operator = op
+        self.key = key
+        self.value = value
+    }
+    
+    public init(_ key: KeyPath<Model, [Value]>, contains value: Value) {
+        self.operator = .contains
         self.key = key
         self.value = value
     }
@@ -56,6 +64,12 @@ public struct Where<Model: Queryable, Value: Codable>: Predicate {
     
     public func map<Mapper>(using mapper: Mapper, in context: inout Mapper.Context) throws where Mapper: PredicateMapper {
         try mapper.map(self, in: &context)
+    }
+}
+
+extension Where where Value: RandomAccessCollection {
+    public init(_ key: KeyPath<Model, Value>, isAnyOf value: Value) {
+        self.init(key, .isAnyOf, value)
     }
 }
 

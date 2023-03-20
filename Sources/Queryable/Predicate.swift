@@ -44,14 +44,14 @@ extension Predicate {
     }
     
     public func map<Mapper>(using mapper: Mapper) throws -> Mapper.MapRes where Mapper: PredicateMapper {
-        throw NotImplemented(missingIn: Self.self, context: """
+        throw NotImplemented(in: Self.self, context: """
         To fix this issue your Predicate must provide an implementation of \
         func map<Mapper>(using mapper: Mapper) throws -> Mapper.MapRes where Mapper: PredicateMapper
         """)
     }
     
     public func map<Mapper>(using mapper: Mapper, in context: inout Mapper.Context) throws where Mapper: PredicateMapper {
-        throw NotImplemented(missingIn: Self.self, context: """
+        throw NotImplemented(in: Self.self, context: """
         To fix this issue your Predicate must provide an implementation of \
         func map<Mapper>(using mapper: Mapper, in context: inout Mapper.Context) throws where Mapper: PredicateMapper
         """)
