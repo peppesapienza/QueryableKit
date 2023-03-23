@@ -25,19 +25,26 @@ struct FirestoreMapper: PredicateMapper {
         case .isLessThanOrEqualTo:
             context = context.whereField(try predicate.field(), isLessThanOrEqualTo: predicate.value)
             return .where(try predicate.field(), isLessThanOrEqualTo: predicate.value)
-            
-        case .isAnyOf:
-            context = context.whereField(try predicate.field(), arrayContainsAny: predicate.value as! [Any])
-            return .where(try predicate.field(), arrayContainsAny: predicate.value as! [Any])
-            
-        case .contains:
-            context = context.whereField(try predicate.field(), arrayContains: predicate.value)
-            return .whereField(try predicate.field(), arrayContains: predicate.value)
         }
     }
     
     func map<Model, Value>(_ predicate: Order<Model, Value>, in context: inout Query) throws -> QueryPredicate {
         context = context.order(by: try predicate.field(), descending: predicate.descending)
         return .order(by: try predicate.field(), descending: predicate.descending)
+    }
+    
+    func map<Model, Value>(_ predicate: Contains<Model, Value>, in context: inout Query) throws -> QueryPredicate {
+        switch predicate.operator {
+        case .contains:
+            assert(predicate.value.first != nil)
+            assert(predicate.value.count == 1)
+            
+            context = context.whereField(try predicate.field(), arrayContains: predicate.value.first!)
+            return .whereField(try predicate.field(), arrayContains: predicate.value)
+            
+        case .anyOf:
+            context = context.whereField(try predicate.field(), arrayContainsAny: predicate.value)
+            return .where(try predicate.field(), arrayContainsAny: predicate.value)
+        }
     }
 }

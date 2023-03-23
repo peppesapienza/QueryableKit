@@ -35,6 +35,10 @@ struct SomeMapper: PredicateMapper {
     func map<Model, Value>(_ predicate: Order<Model, Value>, in context: inout String) throws -> String {
         "orderBy \(try predicate.field()) descending: \(predicate.descending)"
     }
+    
+    func map<Model, Value>(_ predicate: Contains<Model, Value>, in context: inout String) throws -> String {
+        "\(predicate.operator.rawValue) \(predicate.value) in \(try predicate.field())"
+    }
 }
 
 final class QueryableTests: XCTestCase {
@@ -58,8 +62,8 @@ final class QueryableTests: XCTestCase {
         
         XCTAssertEqual(try Where(\City.name, equalTo: "someName").map(using: someMapper, in: &context), "name equalTo someName")
         XCTAssertEqual(try Where(\City.population, isGreaterThanOrEqualTo: 0).map(using: someMapper, in: &context), "populationCount isGreaterThanOrEqualTo 0")
-        XCTAssertEqual(try Where(\City.suburbs, contains: "Melbourne").map(using: someMapper, in: &context), "suburbs contains Melbourne")
-        XCTAssertEqual(try Where(\City.suburbs, isAnyOf: ["Melbourne"]).map(using: someMapper, in: &context), "suburbs isAnyOf [\"Melbourne\"]")
+        XCTAssertEqual(try Contains("Melbourne", in: \City.suburbs).map(using: someMapper, in: &context), "contains [\"Melbourne\"] in suburbs")
+        XCTAssertEqual(try Contains(anyOf: ["Melbourne"], in: \City.suburbs).map(using: someMapper, in: &context), "anyOf [\"Melbourne\"] in suburbs")
         XCTAssertEqual(try Order(by: \City.name).map(using: someMapper, in: &context), "orderBy name descending: true")
      
     }

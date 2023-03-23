@@ -1,5 +1,5 @@
 /**
- A `Where` is used to create a `Predicate` that represents a condition to be met by a certain key-value pair of a `Queryable` model.
+ A `Where` is  a `Predicate` that represents a condition to be met by a certain key-value pair of a `Queryable` model.
  
  - Parameters:
  - Model: The queryable model.
@@ -11,20 +11,20 @@
  Where(\Person.city, equalTo: "Melbourne")
  ```
  */
-public struct Where<Model: Queryable, Value: Codable>: Predicate {
+public struct Where<Model: Queryable, Value>: Predicate {
     public enum Operator: String {
         case equalTo
         case isGreaterThan
         case isGreaterThanOrEqualTo
         case isLessThan
         case isLessThanOrEqualTo
-        case isAnyOf
-        case contains
     }
     
-    public let key: PartialKeyPath<Model>
+    public var key: PartialKeyPath<Model> { keyPath }
     public let value: Value
     public let `operator`: Operator
+    
+    public let keyPath: KeyPath<Model, Value>
     
     public init(_ key: KeyPath<Model, Value>, equalTo value: Value) {
         self.init(key, .equalTo, value)
@@ -48,30 +48,12 @@ public struct Where<Model: Queryable, Value: Codable>: Predicate {
     
     public init(_ key: KeyPath<Model, Value>, _ op: Operator, _ value: Value) {
         self.operator = op
-        self.key = key
         self.value = value
-    }
-    
-    public init(_ key: KeyPath<Model, [Value]>, contains value: Value) {
-        self.operator = .contains
-        self.key = key
-        self.value = value
-    }
-    
-    public init(_ key: KeyPath<Model, Set<Value>>, contains value: Value) where Value: Hashable {
-        self.operator = .contains
-        self.key = key
-        self.value = value
+        self.keyPath = key
     }
     
     public func map<Mapper>(using mapper: Mapper, in context: inout Mapper.Context) throws -> Mapper.MapRes where Mapper: PredicateMapper {
         try mapper.map(self, in: &context)
-    }
-}
-
-extension Where where Value: RandomAccessCollection {
-    public init(_ key: KeyPath<Model, Value>, isAnyOf value: Value) {
-        self.init(key, .isAnyOf, value)
     }
 }
 

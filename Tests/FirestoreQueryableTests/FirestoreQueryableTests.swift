@@ -71,7 +71,7 @@ final class FirestoreIntegrationTests: XCTestCase {
         let anyOfExpectedFriends = ["giuseppe", "emily"]
         
         let snap = try await Firestore.firestore().collection("people").query([
-            Where(\Person.friendIds, isAnyOf: anyOfExpectedFriends)
+            Contains(anyOf: anyOfExpectedFriends, in: \Person.friendIds)
         ])
         .getDocuments()
         
