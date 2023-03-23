@@ -58,6 +58,12 @@ public struct Where<Model: Queryable, Value: Codable>: Predicate {
         self.value = value
     }
     
+    public init(_ key: KeyPath<Model, Set<Value>>, contains value: Value) where Value: Hashable {
+        self.operator = .contains
+        self.key = key
+        self.value = value
+    }
+    
     public func map<Mapper>(using mapper: Mapper, in context: inout Mapper.Context) throws -> Mapper.MapRes where Mapper: PredicateMapper {
         try mapper.map(self, in: &context)
     }
