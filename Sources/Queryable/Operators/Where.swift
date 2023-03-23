@@ -11,7 +11,7 @@
  Where(\Person.city, equalTo: "Melbourne")
  ```
  */
-public struct Where<Model: Queryable, Value>: Predicate {
+public struct Where<Model: Queryable, Value: Equatable & Comparable>: Predicate {
     public enum Operator: String {
         case equalTo
         case isGreaterThan
@@ -57,23 +57,23 @@ public struct Where<Model: Queryable, Value>: Predicate {
     }
 }
 
-public func ==<Model: Queryable, Value: Codable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
+public func ==<Model: Queryable, Value: Equatable & Comparable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
     Where(lhs, equalTo: rhs)
 }
 
-public func <<Model: Queryable, Value: Codable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
+public func <<Model: Queryable, Value: Equatable & Comparable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
     Where(lhs, isLessThan: rhs)
 }
 
-public func <=<Model: Queryable, Value: Codable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
+public func <=<Model: Queryable, Value: Equatable & Comparable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
     Where(lhs, isLessThanOrEqualTo: rhs)
 }
 
-public func ><Model: Queryable, Value: Codable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
+public func ><Model: Queryable, Value: Equatable & Comparable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
     Where(lhs, isGreaterThan: rhs)
 }
 
-public func >=<Model: Queryable, Value: Codable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
+public func >=<Model: Queryable, Value: Equatable & Comparable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
     Where(lhs, isGreaterThanOrEqualTo: rhs)
 }
 
