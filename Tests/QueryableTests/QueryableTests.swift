@@ -28,11 +28,13 @@ struct SomeMapper: PredicateMapper {
     typealias MapRes = String
     typealias Context = String
     
-    func map<Model, Value>(_ predicate: Where<Model, Value>) throws -> String {
+    func map<Model, Value>(_ predicate: Where<Model, Value>, in context: inout Context) throws -> String {
         "\(try predicate.field()) \(predicate.operator.rawValue) \(predicate.value)"
     }
     
-    func map<Model, Value>(_ predicate: Where<Model, Value>, in context: inout Context) throws {}
+    func map<Model, Value>(_ predicate: Order<Model, Value>, in context: inout String) throws -> String {
+        "orderBy \(try predicate.field()) descending: \(predicate.descending)"
+    }
 }
 
 final class QueryableTests: XCTestCase {
@@ -50,24 +52,15 @@ final class QueryableTests: XCTestCase {
     }
     
     func test_givenWherePredicates_testMapper_mustReturnsExpectedValue() throws {
-        let predicates: [any Predicate] = [
-            Where(\City.name, equalTo: "someName"),
-            Where(\City.population, isGreaterThanOrEqualTo: 0),
-            Where(\City.suburbs, contains: "Melbourne"),
-            Where(\City.suburbs, isAnyOf: ["Melbourne"]),
-        ]
-        
         let someMapper = SomeMapper()
         
-        XCTAssertEqual(
-            try predicates.map { try $0.map(using: someMapper) },
-            [
-                "name equalTo someName",
-                "populationCount isGreaterThanOrEqualTo 0",
-                "suburbs contains Melbourne",
-                "suburbs isAnyOf [\"Melbourne\"]"
-            ]
-        )
+        var context = ""
         
+        XCTAssertEqual(try Where(\City.name, equalTo: "someName").map(using: someMapper, in: &context), "name equalTo someName")
+        XCTAssertEqual(try Where(\City.population, isGreaterThanOrEqualTo: 0).map(using: someMapper, in: &context), "populationCount isGreaterThanOrEqualTo 0")
+        XCTAssertEqual(try Where(\City.suburbs, contains: "Melbourne").map(using: someMapper, in: &context), "suburbs contains Melbourne")
+        XCTAssertEqual(try Where(\City.suburbs, isAnyOf: ["Melbourne"]).map(using: someMapper, in: &context), "suburbs isAnyOf [\"Melbourne\"]")
+        XCTAssertEqual(try Order(by: \City.name).map(using: someMapper, in: &context), "orderBy name descending: true")
+     
     }
 }

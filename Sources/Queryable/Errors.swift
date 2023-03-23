@@ -1,7 +1,7 @@
 import Foundation
 
 public struct NotImplemented: Error, LocalizedError {
-    init<T>(funcName: String = #function, missingIn type: T.Type, context: String = "") {
+    public init<T>(funcName: String = #function, in type: T.Type, context: String = "") {
         self.funcName = funcName
         self.type = "\(type)"
         self.context = context
