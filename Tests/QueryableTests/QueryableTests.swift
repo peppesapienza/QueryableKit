@@ -28,7 +28,11 @@ struct SomeMapper: PredicateMapper {
     typealias MapRes = String
     typealias Context = String
     
-    func map<Model, Value>(_ predicate: Where<Model, Value>, in context: inout Context) throws -> String {
+    func map<Model, Value>(_ predicate: IsEqual<Model, Value>, in context: inout Context) throws -> String {
+        "\(try predicate.field()) equalTo \(predicate.value)"
+    }
+    
+    func map<Model, Value>(_ predicate: Compare<Model, Value>, in context: inout Context) throws -> String {
         "\(try predicate.field()) \(predicate.operator.rawValue) \(predicate.value)"
     }
     
@@ -43,12 +47,12 @@ struct SomeMapper: PredicateMapper {
 
 final class QueryableTests: XCTestCase {
     func test_givenFieldHasBeenSpecified_then_fieldMethod_mustReturnsExpectedValue() throws {
-        XCTAssertEqual(try Where(\City.name, equalTo: "").field(), "name")
-        XCTAssertEqual(try Where(\City.population, equalTo: 0).field(), "populationCount")
+        XCTAssertEqual(try IsEqual(\City.name, to: "").field(), "name")
+        XCTAssertEqual(try IsEqual(\City.population, to: 0).field(), "populationCount")
     }
     
     func test_givenMissingPath_then_fieldMethod_mustThrownException() throws {
-        XCTAssertThrowsError(try Where(\City.missingField, equalTo: false).field()) { error in
+        XCTAssertThrowsError(try IsEqual(\City.missingField, to: false).field()) { error in
             print(error.localizedDescription)
             let error = try! XCTUnwrap(error as? FieldMissing<City>)
             XCTAssertEqual(error.key, \.missingField)
@@ -60,11 +64,56 @@ final class QueryableTests: XCTestCase {
         
         var context = ""
         
-        XCTAssertEqual(try Where(\City.name, equalTo: "someName").map(using: someMapper, in: &context), "name equalTo someName")
-        XCTAssertEqual(try Where(\City.population, isGreaterThanOrEqualTo: 0).map(using: someMapper, in: &context), "populationCount isGreaterThanOrEqualTo 0")
+        XCTAssertEqual(try IsEqual(\City.name, to: "someName").map(using: someMapper, in: &context), "name equalTo someName")
+        XCTAssertEqual(try Compare(\City.population, isGreaterThanOrEqualTo: 0).map(using: someMapper, in: &context), "populationCount isGreaterThanOrEqualTo 0")
         XCTAssertEqual(try Contains("Melbourne", in: \City.suburbs).map(using: someMapper, in: &context), "contains [\"Melbourne\"] in suburbs")
         XCTAssertEqual(try Contains(anyOf: ["Melbourne"], in: \City.suburbs).map(using: someMapper, in: &context), "anyOf [\"Melbourne\"] in suburbs")
         XCTAssertEqual(try Order(by: \City.name).map(using: someMapper, in: &context), "orderBy name descending: true")
      
+        let inMem = InMemoryPredicateMapper<City>()
+        
+        var array = [
+            City(name: "Rome", population: 10, suburbs: ["1"]),
+            City(name: "Melbourne", population: 100, suburbs: ["2"])
+        ]
+        
+        try [
+            Compare(\City.population, isGreaterThan: 10)
+        ].forEach { predicate in
+            try inMem.map(predicate, in: &array)
+        }
+        
+        print(array)
     }
+}
+
+
+struct InMemoryPredicateMapper<Element>: PredicateMapper {
+    
+    func map<Model, Value>(_ predicate: IsEqual<Model, Value>, in context: inout [Element]) throws {
+        context = context.filter { predicate.isSatisfied(by: ($0 as! Model)[keyPath: predicate.keyPath]) }
+    }
+    
+    func map<Model, Value>(_ predicate: Compare<Model, Value>, in context: inout [Element]) throws {
+        switch predicate.operator {
+        case .isGreaterThan:
+            context = context.filter { predicate.isSatisfied(by: ($0 as! Model)[keyPath: predicate.keyPath]) }
+            
+        case .isGreaterThanOrEqualTo:
+            context = context.filter { predicate.isSatisfied(by: ($0 as! Model)[keyPath: predicate.keyPath]) }
+            
+        case .isLessThan:
+            context = context.filter { predicate.isSatisfied(by: ($0 as! Model)[keyPath: predicate.keyPath]) }
+            
+        case .isLessThanOrEqualTo:
+            context = context.filter { predicate.isSatisfied(by: ($0 as! Model)[keyPath: predicate.keyPath]) }
+        }
+    }
+    
+    func map<Model, Value>(_ predicate: Order<Model, Value>, in context: inout [Element]) throws {
+    }
+    
+    func map<Model, Value>(_ predicate: Contains<Model, Value>, in context: inout [Element]) throws {
+    }
+    
 }

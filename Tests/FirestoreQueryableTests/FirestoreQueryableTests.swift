@@ -53,10 +53,15 @@ final class FirestoreIntegrationTests: XCTestCase {
         let expectedCityId = "melbourne"
         
         let snap = try await Firestore.firestore().collection("people").query([
-            Where(\Person.cityId, equalTo: expectedCityId),
-            Where(\Person.name, equalTo: expectedName)
+            IsEqual(\Person.cityId, to: expectedCityId),
+            IsEqual(\Person.name, to: expectedName)
         ])
         .getDocuments()
+        
+        try await Firestore.firestore().collection("people")
+            .query(Person.self)
+            .where(\.name, isEqual: expectedName)
+            
         
         XCTAssertEqual(snap.documents.count, 1)
         let doc = try XCTUnwrap(snap.documents.first)

@@ -3,13 +3,13 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 struct FirestoreMapper: PredicateMapper {
-    @discardableResult
-    func map<Model, Value>(_ predicate: Where<Model, Value>, in context: inout Query) throws -> QueryPredicate {
+    func map<Model, Value>(_ predicate: IsEqual<Model, Value>, in context: inout Query) throws -> QueryPredicate {
+        context = context.whereField(try predicate.field(), isEqualTo: predicate.value)
+        return .isEqualTo(try predicate.field(), predicate.value)
+    }
+    
+    func map<Model, Value>(_ predicate: Compare<Model, Value>, in context: inout Query) throws -> QueryPredicate {
         switch predicate.operator {
-        case .equalTo:
-            context = context.whereField(try predicate.field(), isEqualTo: predicate.value)
-            return .where(try predicate.field(), isEqualTo: predicate.value)
-            
         case .isGreaterThan:
             context = context.whereField(try predicate.field(), isGreaterThan: predicate.value)
             return .where(try predicate.field(), isGreaterThan: predicate.value)
