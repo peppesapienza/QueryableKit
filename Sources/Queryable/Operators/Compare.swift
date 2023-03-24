@@ -1,19 +1,5 @@
-/**
- A `Where` is  a `Predicate` that represents a condition to be met by a certain key-value pair of a `Queryable` model.
- 
- - Parameters:
- - Model: The queryable model.
- - Value: The type of the property being compared.
- 
- Example:
- creates a predicate where the `city` property of the `Person` model must be equal to "Melbourne".
- ```
- Where(\Person.city, equalTo: "Melbourne")
- ```
- */
-public struct Where<Model: Queryable, Value: Equatable & Comparable>: Predicate {
+public struct Compare<Model: Queryable, Value: Comparable>: Predicate {
     public enum Operator: String {
-        case equalTo
         case isGreaterThan
         case isGreaterThanOrEqualTo
         case isLessThan
@@ -25,10 +11,6 @@ public struct Where<Model: Queryable, Value: Equatable & Comparable>: Predicate 
     public let `operator`: Operator
     
     public let keyPath: KeyPath<Model, Value>
-    
-    public init(_ key: KeyPath<Model, Value>, equalTo value: Value) {
-        self.init(key, .equalTo, value)
-    }
     
     public init(_ key: KeyPath<Model, Value>, isGreaterThan value: Value) {
         self.init(key, .isGreaterThan, value)
@@ -55,26 +37,31 @@ public struct Where<Model: Queryable, Value: Equatable & Comparable>: Predicate 
     public func map<Mapper>(using mapper: Mapper, in context: inout Mapper.Context) throws -> Mapper.MapRes where Mapper: PredicateMapper {
         try mapper.map(self, in: &context)
     }
-}
-
-public func ==<Model: Queryable, Value: Equatable & Comparable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
-    Where(lhs, equalTo: rhs)
+    
+    func isSatisfied(by candidate: Value) -> Bool  {
+        switch `operator` {
+        case .isLessThanOrEqualTo: return candidate <= value
+        case .isLessThan: return candidate < value
+        case .isGreaterThan: return candidate > value
+        case .isGreaterThanOrEqualTo: return candidate >= value
+        }
+    }
 }
 
 public func <<Model: Queryable, Value: Equatable & Comparable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
-    Where(lhs, isLessThan: rhs)
+    Compare(lhs, isLessThan: rhs)
 }
 
 public func <=<Model: Queryable, Value: Equatable & Comparable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
-    Where(lhs, isLessThanOrEqualTo: rhs)
+    Compare(lhs, isLessThanOrEqualTo: rhs)
 }
 
 public func ><Model: Queryable, Value: Equatable & Comparable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
-    Where(lhs, isGreaterThan: rhs)
+    Compare(lhs, isGreaterThan: rhs)
 }
 
 public func >=<Model: Queryable, Value: Equatable & Comparable>(lhs: KeyPath<Model, Value>, rhs: Value) -> some Predicate {
-    Where(lhs, isGreaterThanOrEqualTo: rhs)
+    Compare(lhs, isGreaterThanOrEqualTo: rhs)
 }
 
 
