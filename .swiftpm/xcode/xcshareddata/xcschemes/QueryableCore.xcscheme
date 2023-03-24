@@ -14,37 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "Queryable"
-               BuildableName = "Queryable"
-               BlueprintName = "Queryable"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "QueryableTests"
-               BuildableName = "QueryableTests"
-               BlueprintName = "QueryableTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FirestoreQueryable"
-               BuildableName = "FirestoreQueryable"
-               BlueprintName = "FirestoreQueryable"
+               BlueprintIdentifier = "QueryableCore"
+               BuildableName = "QueryableCore"
+               BlueprintName = "QueryableCore"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -60,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "QueryableTests"
-               BuildableName = "QueryableTests"
-               BlueprintName = "QueryableTests"
+               BlueprintIdentifier = "CoreTests"
+               BuildableName = "CoreTests"
+               BlueprintName = "CoreTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -88,9 +60,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "Queryable"
-            BuildableName = "Queryable"
-            BlueprintName = "Queryable"
+            BlueprintIdentifier = "QueryableCore"
+            BuildableName = "QueryableCore"
+            BlueprintName = "QueryableCore"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>

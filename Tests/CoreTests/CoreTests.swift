@@ -1,5 +1,5 @@
 import XCTest
-@testable import Queryable
+@testable import QueryableCore
 
 struct City: Queryable {
     let name: String

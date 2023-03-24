@@ -1,4 +1,4 @@
-import Queryable
+import QueryableCore
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
