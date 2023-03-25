@@ -7,17 +7,7 @@ public protocol Predicate<Model> where Model: Queryable {
     /// A `PartialKeyPath` that identifies the property of the `Model` that the predicate applies to.
     var key: PartialKeyPath<Model> { get }
     
-    /// Applies a mapper to the `Predicate` and updates the provided context.
-    ///
-    /// - Parameters:
-    ///   - mapper: The `PredicateMapper` to apply to the `Predicate`.
-    ///   - context: The context to update with the results of the mapper.
-    ///
-    /// - Returns: The result of applying the mapper to the `Predicate`.
-    ///
-    /// - Throws: Any error thrown by the mapper.
-    @discardableResult
-    func map<Mapper: PredicateMapper>(using mapper: Mapper, in context: inout Mapper.Context) throws -> Mapper.MapRes
+    func visit<Visitor>(using visitor: Visitor, in context: inout Visitor.Context) throws where Visitor: PredicateVisitor
 }
 
 extension Predicate {
@@ -35,8 +25,7 @@ extension Predicate {
         return field
     }
     
-    @discardableResult
-    public func map<Mapper>(using mapper: Mapper, in context: inout Mapper.Context) throws -> Mapper.MapRes where Mapper: PredicateMapper {
+    public func visit<Visitor>(using visitor: Visitor, in context: inout Visitor.Context) throws where Visitor: PredicateVisitor {
         throw NotImplemented(in: Self.self, context: """
         To fix this issue your Predicate must provide an implementation of \
         func map<Mapper: PredicateMapper>(using mapper: Mapper, in context: inout Mapper.Context) throws -> Mapper.MapRes

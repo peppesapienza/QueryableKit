@@ -6,12 +6,12 @@ public extension CollectionReference {
     func query(_ predicates: [any Predicate]) -> Query {
         guard !predicates.isEmpty else { return self }
         
-        let mapper = FirestoreMapper()
+        let composer = FirestorePredicateComposer()
         var result: Query = self
         
         do {
             try predicates.forEach { predicate in
-                try predicate.map(using: mapper, in: &result)
+                try predicate.visit(using: composer, in: &result)
             }
         } catch let error {
             assertionFailure(error.localizedDescription)

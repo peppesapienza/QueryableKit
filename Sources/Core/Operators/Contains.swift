@@ -25,7 +25,7 @@ public struct Contains<Model: Queryable, Value>: Predicate {
         self.operator = .anyOf
     }
     
-    public func map<Mapper>(using mapper: Mapper, in context: inout Mapper.Context) throws -> Mapper.MapRes where Mapper: PredicateMapper {
-        try mapper.map(self, in: &context)
+    public func visit<Visitor>(using visitor: Visitor, in context: inout Visitor.Context) throws where Visitor: PredicateVisitor {
+        try visitor.visit(self, in: &context)
     }
 }
