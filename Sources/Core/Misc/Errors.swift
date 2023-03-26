@@ -23,6 +23,27 @@ public struct NotImplemented: Error, LocalizedError {
     }
 }
 
+public struct TypeNotSupported: Error, LocalizedError {
+    public init<T>(_ type: T.Type, context: String = "") {
+        self.type = "\(type)"
+        self.context = context
+    }
+    
+    private let type: String
+    private let context: String
+    
+    public var localizedDescription: String {
+        """
+        [QueryableError] \(type) is not supported.
+        \(context)
+        """
+    }
+    
+    public var errorDescription: String? {
+        localizedDescription
+    }
+}
+
 public struct FieldMissing<Model: Queryable>: Error, LocalizedError {
     let key: PartialKeyPath<Model>
     

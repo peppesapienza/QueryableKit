@@ -29,7 +29,7 @@ struct FirestorePredicateComposer: PredicateVisitor {
         }
     }
     
-    func visit<Model, Value>(_ predicate: Order<Model, Value>, in context: inout Query) throws {
+    func visit<Path, PathType>(_ predicate: Sort<Path, PathType>, in context: inout Query) throws {
         context = context.order(by: try predicate.field(), descending: predicate.descending)
     }
   
