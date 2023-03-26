@@ -26,12 +26,12 @@ struct City: Queryable {
 
 final class QueryableTests: XCTestCase {
     func test_givenFieldHasBeenSpecified_then_fieldMethod_mustReturnsExpectedValue() throws {
-        XCTAssertEqual(try IsEqual(\City.name, to: "").field(), "name")
-        XCTAssertEqual(try IsEqual(\City.population, to: 0).field(), "populationCount")
+        XCTAssertEqual(try Field(\City.name, isEqualTo: "").field(), "name")
+        XCTAssertEqual(try Field(\City.population, isGreaterThanOrEqualTo: 0).field(), "populationCount")
     }
     
     func test_givenMissingPath_then_fieldMethod_mustThrownException() throws {
-        XCTAssertThrowsError(try IsEqual(\City.missingField, to: false).field()) { error in
+        XCTAssertThrowsError(try Field(\City.missingField, isEqualTo: false).field()) { error in
             print(error.localizedDescription)
             let error = try! XCTUnwrap(error as? FieldMissing<City>)
             XCTAssertEqual(error.key, \.missingField)

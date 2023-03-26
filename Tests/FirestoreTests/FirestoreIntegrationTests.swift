@@ -1,5 +1,5 @@
 import XCTest
-import Queryable
+import QueryableCore
 import FirebaseFirestoreSwift
 import FirebaseFirestore
 import FirebaseCore
@@ -53,15 +53,10 @@ final class FirestoreIntegrationTests: XCTestCase {
         let expectedCityId = "melbourne"
         
         let snap = try await Firestore.firestore().collection("people").query([
-            IsEqual(\Person.cityId, to: expectedCityId),
-            IsEqual(\Person.name, to: expectedName)
+            Field(\Person.cityId, isEqualTo: expectedCityId),
+            Field(\Person.name, isEqualTo: expectedName)
         ])
         .getDocuments()
-        
-        try await Firestore.firestore().collection("people")
-            .query(Person.self)
-            .where(\.name, isEqual: expectedName)
-            
         
         XCTAssertEqual(snap.documents.count, 1)
         let doc = try XCTUnwrap(snap.documents.first)
@@ -76,7 +71,7 @@ final class FirestoreIntegrationTests: XCTestCase {
         let anyOfExpectedFriends = ["giuseppe", "emily"]
         
         let snap = try await Firestore.firestore().collection("people").query([
-            Contains(anyOf: anyOfExpectedFriends, in: \Person.friendIds)
+            Field(\Person.friendIds, isAnyOf: anyOfExpectedFriends)
         ])
         .getDocuments()
         
@@ -85,8 +80,5 @@ final class FirestoreIntegrationTests: XCTestCase {
         Set(persons.flatMap { $0.friendIds }).forEach { friend in
             XCTAssertTrue(anyOfExpectedFriends.contains(friend))
         }
-        
     }
-    
-    
 }

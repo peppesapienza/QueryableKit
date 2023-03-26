@@ -28,7 +28,7 @@ extension Predicate {
     public func visit<Visitor>(using visitor: Visitor, in context: inout Visitor.Context) throws where Visitor: PredicateVisitor {
         throw NotImplemented(in: Self.self, context: """
         To fix this issue your Predicate must provide an implementation of \
-        func map<Mapper: PredicateMapper>(using mapper: Mapper, in context: inout Mapper.Context) throws -> Mapper.MapRes
+        func visit<Visitor>(using visitor: Visitor, in context: inout Visitor.Context) throws where Visitor: PredicateVisitor
         """)
     }
 }

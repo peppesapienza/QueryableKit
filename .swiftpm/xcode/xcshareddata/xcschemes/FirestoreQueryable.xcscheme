@@ -46,9 +46,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FirestoreQueryableTests"
-               BuildableName = "FirestoreQueryableTests"
-               BlueprintName = "FirestoreQueryableTests"
+               BlueprintIdentifier = "FirestoreTests"
+               BuildableName = "FirestoreTests"
+               BlueprintName = "FirestoreTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
