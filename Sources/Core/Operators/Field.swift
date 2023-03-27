@@ -1,3 +1,5 @@
+/// A `Field`  defines a predicate that can be used to compare a `Queryable` key path
+/// to a `Value` with a specified `Operator`.
 public struct Field<Path: Queryable, PathType, Value> {
     
     public enum Operator: String {

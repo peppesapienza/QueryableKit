@@ -1,5 +1,5 @@
-/// The `Predicate` protocol defines a type that represents a filter condition
-/// that can be used to query a `Model` conforming to the `Queryable` protocol.
+/// A `Predicate` provides a type-safe way to represent a condition that can be used to
+/// filter, sort and query your `Queryable` objects.
 public protocol Predicate<Model> where Model: Queryable {
     
     associatedtype Model
