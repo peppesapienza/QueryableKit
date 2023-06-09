@@ -1,5 +1,4 @@
-// swift-tools-version: 5.7
-// The swift-tools-version declares the minimum version of Swift required to build this package.
+// swift-tools-version: 5.8
 
 import PackageDescription
 
@@ -7,7 +6,6 @@ let package = Package(
     name: "QueryableKit",
     platforms: [.iOS(.v16), .macOS(.v13)],
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "QueryableCore",
             targets: ["QueryableCore"]),
@@ -17,7 +15,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/firebase/firebase-ios-sdk", branch: "master")
+        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: .init(10, 0, 0))
     ],
     targets: [
         .target(
