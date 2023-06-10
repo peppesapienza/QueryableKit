@@ -38,5 +38,9 @@ struct FirestorePredicateComposer: PredicateVisitor {
     func visit<Path, PathType>(_ predicate: Sort<Path, PathType>, in context: inout Query) throws {
         context = context.order(by: try predicate.field(), descending: predicate.descending)
     }
+    
+    func visit(_ predicate: Limit, in context: inout Query) throws {
+        context = context.limit(to: predicate.max)
+    }
   
 }
