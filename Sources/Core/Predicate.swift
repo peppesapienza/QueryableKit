@@ -1,6 +1,11 @@
 /// A `Predicate` provides a type-safe way to represent a condition
 /// that can be used to filter, sort and query your data.
-public protocol Predicate {
+public protocol Predicate<Model> where Model: Queryable  {
+    associatedtype Model
+    
+    /// A `PartialKeyPath` that identifies the property of the `Model` that the predicate applies to.
+    var key: PartialKeyPath<Model> { get }
+    
     func visit<Visitor>(using visitor: Visitor, in context: inout Visitor.Context) throws where Visitor: PredicateVisitor
 }
 
@@ -13,15 +18,7 @@ extension Predicate {
     }
 }
 
-/// A `Predicate` bounded to a `Queryable` model.
-public protocol ModelPredicate<Model>: Predicate where Model: Queryable {
-    associatedtype Model
-    
-    /// A `PartialKeyPath` that identifies the property of the `Model` that the predicate applies to.
-    var key: PartialKeyPath<Model> { get }
-}
-
-extension ModelPredicate {
+extension Predicate {
     var type: Model.Type { Model.self }
     
     /// Returns the string path that corresponds to the key path being queried, if one exists.

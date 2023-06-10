@@ -67,6 +67,16 @@ final class FirestoreIntegrationTests: XCTestCase {
         XCTAssertEqual(person.id, "giuseppe")
     }
     
+    func test_givenLimit_itMustReturnExpectedCount() async throws {
+        let res = try await Firestore.firestore().collection("people").query([
+            Limit(max: 1)
+        ])
+        .count
+        .getAggregation(source: .server)
+        
+        XCTAssertEqual(res.count, 1)
+    }
+    
     func test_givenFriendIds_whenQueryByAnyOf_mustReturnExpectedResult() async throws {
         let anyOfExpectedFriends = ["giuseppe", "emily"]
         

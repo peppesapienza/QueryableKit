@@ -1,7 +1,7 @@
 /// A `Sort`  defines a predicate for sorting condition on `Queryable` object keyPath.
 ///
 /// It also provides a way to define `ascending` or `descending` order.
-public struct Sort<Path: Queryable, Value: Comparable>: ModelPredicate {
+public struct Sort<Path: Queryable, Value: Comparable>: Predicate {
     public let keyPath: KeyPath<Path, Value>
     public let descending: Bool
     

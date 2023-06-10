@@ -21,7 +21,7 @@ public struct Field<Path: Queryable, PathType, Value> {
     }
 }
 
-extension Field: ModelPredicate {
+extension Field: Predicate {
     public typealias Model = Path
     
     public var key: PartialKeyPath<Path> {
