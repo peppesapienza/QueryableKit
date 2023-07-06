@@ -10,12 +10,14 @@ struct Person: Queryable {
     let name: String
     let cityId: String
     let friendIds: [String]
+    let age: Int?
     
     static func field(_ path: PartialKeyPath<Person>) -> String? {
         switch path {
         case \.name: return CodingKeys.name.stringValue
         case \.cityId: return CodingKeys.cityId.stringValue
         case \.friendIds: return CodingKeys.friendIds.stringValue
+        case \.age: return CodingKeys.age.stringValue
         default: return nil
         }
     }
@@ -51,10 +53,11 @@ final class FirestoreIntegrationTests: XCTestCase {
     func test_givenPersonExist_whenQueryByCityAndName_itMustReturnExpectedResult() async throws {
         let expectedName = "Peppe"
         let expectedCityId = "melbourne"
-        
+                
         let snap = try await Firestore.firestore().collection("people").query([
-            Field(\Person.cityId, isEqualTo: expectedCityId),
-            Field(\Person.name, isEqualTo: expectedName)
+            \Person.cityId == expectedCityId,
+            Field(\Person.name, isEqualTo: expectedName),
+            Limit(max: 1)
         ])
         .getDocuments()
         
@@ -90,5 +93,13 @@ final class FirestoreIntegrationTests: XCTestCase {
         Set(persons.flatMap { $0.friendIds }).forEach { friend in
             XCTAssertTrue(anyOfExpectedFriends.contains(friend))
         }
+    }
+    
+    func test_queryBuilder() async throws {
+        Person
+            .query(in: Firestore.firestore().collection("some"))
+            .where(\.friendIds, contains: "1")
+            .where(\.age!, isLessThan: 30)
+            
     }
 }

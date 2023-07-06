@@ -1,6 +1,6 @@
 /// A `Field`  defines a predicate that can be used to compare a `Queryable` key path
 /// to a `Value` with a specified `Operator`.
-public struct Field<Path: Queryable, PathType, Value> {
+public struct Field<Root: Queryable, RootValue, Value> {
     
     public enum Operator: String {
         case isEqualTo
@@ -12,7 +12,7 @@ public struct Field<Path: Queryable, PathType, Value> {
         case isAnyOf
     }
     
-    public let keyPath: KeyPath<Path, PathType>
+    public let keyPath: KeyPath<Root, RootValue>
     public let `operator`: Operator
     public let value: Value
     
@@ -22,45 +22,45 @@ public struct Field<Path: Queryable, PathType, Value> {
 }
 
 extension Field: Predicate {
-    public typealias Model = Path
+    public typealias Model = Root
     
-    public var key: PartialKeyPath<Path> {
+    public var key: PartialKeyPath<Root> {
         keyPath
     }
 }
 
-public extension Field where PathType: Equatable, Value == PathType {
-    init(_ key: KeyPath<Path, PathType>, isEqualTo value: Value) {
+public extension Field where RootValue: Equatable, Value == RootValue {
+    init(_ key: KeyPath<Root, RootValue>, isEqualTo value: Value) {
         self.init(keyPath: key, operator: .isEqualTo, value: value)
     }
 }
 
-public extension Field where PathType: Collection, Value == PathType.Element {
-    init(_ key: KeyPath<Path, PathType>, contains value: Value) {
+public extension Field where RootValue: Collection, Value == RootValue.Element {
+    init(_ key: KeyPath<Root, RootValue>, contains value: Value) {
         self.init(keyPath: key, operator: .contains, value: value)
     }
 }
 
-public extension Field where PathType: Collection, Value == PathType {
-    init(_ key: KeyPath<Path, PathType>, isAnyOf value: Value) {
+public extension Field where RootValue: Collection, Value == RootValue {
+    init(_ key: KeyPath<Root, RootValue>, isAnyOf value: Value) {
         self.init(keyPath: key, operator: .isAnyOf, value: value)
     }
 }
 
-public extension Field where PathType: Comparable, Value == PathType {
-    init(_ key: KeyPath<Path, PathType>, isGreaterThan value: Value) {
+public extension Field where RootValue: Comparable, Value == RootValue {
+    init(_ key: KeyPath<Root, RootValue>, isGreaterThan value: Value) {
         self.init(keyPath: key, operator: .isGreaterThan, value: value)
     }
     
-    init(_ key: KeyPath<Path, PathType>, isLessThan value: Value) {
+    init(_ key: KeyPath<Root, RootValue>, isLessThan value: Value) {
         self.init(keyPath: key, operator: .isLessThan, value: value)
     }
     
-    init(_ key: KeyPath<Path, PathType>, isGreaterThanOrEqualTo value: Value) {
+    init(_ key: KeyPath<Root, RootValue>, isGreaterThanOrEqualTo value: Value) {
         self.init(keyPath: key, operator: .isGreaterThanOrEqualTo, value: value)
     }
     
-    init(_ key: KeyPath<Path, PathType>, isLessThanOrEqualTo value: Value) {
+    init(_ key: KeyPath<Root, RootValue>, isLessThanOrEqualTo value: Value) {
         self.init(keyPath: key, operator: .isLessThanOrEqualTo, value: value)
     }
 }

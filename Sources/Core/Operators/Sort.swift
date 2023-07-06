@@ -1,18 +1,18 @@
 /// A `Sort`  defines a predicate for sorting condition on `Queryable` object keyPath.
 ///
 /// It also provides a way to define `ascending` or `descending` order.
-public struct Sort<Path: Queryable, Value: Comparable>: Predicate {
-    public let keyPath: KeyPath<Path, Value>
+public struct Sort<Root: Queryable, Value: Comparable>: Predicate {
+    public let keyPath: KeyPath<Root, Value>
     public let descending: Bool
     
-    public var key: PartialKeyPath<Path> { keyPath }
+    public var key: PartialKeyPath<Root> { keyPath }
     
     /// Initializes a new instance of `Sort` with the given keyPath and sort direction.
     ///
     /// - Parameters:
     ///   - key: The keyPath to sort by.
     ///   - descending: A Boolean value indicating whether to sort in descending order. The default value is `true`.
-    public init(by key: KeyPath<Path, Value>, descending: Bool = true) {
+    public init(by key: KeyPath<Root, Value>, descending: Bool = true) {
         self.keyPath = key
         self.descending = descending
     }
