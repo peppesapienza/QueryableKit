@@ -1,4 +1,4 @@
-public struct Limit: Predicate {
+public struct Limit: QueryPredicate {
     public typealias Model = Never
     
     public init(max: Int) {

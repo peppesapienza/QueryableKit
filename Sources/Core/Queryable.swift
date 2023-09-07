@@ -1,5 +1,5 @@
 /// The `Queryable` protocol defines a type that can be queried
-/// using predicates conforming to the `Predicate` protocol.
+/// using predicates conforming to the `QueryPredicate` protocol.
 public protocol Queryable: Codable {
     
     /// Returns the string path that corresponds to the provided key path, if one exists.

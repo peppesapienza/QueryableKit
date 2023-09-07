@@ -16,12 +16,15 @@ public struct Field<Root: Queryable, RootValue, Value> {
     public let `operator`: Operator
     public let value: Value
     
-    public func visit<Visitor>(using visitor: Visitor, in context: inout Visitor.Context) throws where Visitor: PredicateVisitor {
+    public func visit<Visitor>(
+        using visitor: Visitor,
+        in context: inout Visitor.Context
+    ) throws where Visitor: PredicateVisitor {
         try visitor.visit(self, in: &context)
     }
 }
 
-extension Field: Predicate {
+extension Field: QueryPredicate {
     public typealias Model = Root
     
     public var key: PartialKeyPath<Root> {
