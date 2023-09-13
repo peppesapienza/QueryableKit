@@ -1,6 +1,6 @@
-/// A `QueryPredicate` provides a type-safe way to represent a condition
+/// A `QueryablePredicate` provides a type-safe way to represent a condition
 /// that can be used to filter, sort and query your data.
-public protocol QueryPredicate<Model> where Model: Queryable  {
+public protocol QueryablePredicate<Model> where Model: Queryable  {
     associatedtype Model
     
     /// A `PartialKeyPath` that identifies the property of the `Model` that the predicate applies to.
@@ -9,7 +9,7 @@ public protocol QueryPredicate<Model> where Model: Queryable  {
     func visit<Visitor>(using visitor: Visitor, in context: inout Visitor.Context) throws where Visitor: PredicateVisitor
 }
 
-extension QueryPredicate {
+extension QueryablePredicate {
     public func visit<Visitor>(using visitor: Visitor, in context: inout Visitor.Context) throws where Visitor: PredicateVisitor {
         throw NotImplemented(in: Self.self, context: """
         To fix this issue your Predicate must provide an implementation of \
@@ -18,7 +18,7 @@ extension QueryPredicate {
     }
 }
 
-extension QueryPredicate {
+extension QueryablePredicate {
     var type: Model.Type { Model.self }
     
     /// Returns the string path that corresponds to the key path being queried, if one exists.

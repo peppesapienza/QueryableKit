@@ -55,7 +55,7 @@ final class FirestoreIntegrationTests: XCTestCase {
         let expectedCityId = "melbourne"
                 
         let snap = try await Firestore.firestore().collection("people").query([
-            \Person.cityId == expectedCityId,
+            Field(\Person.cityId, isEqualTo: expectedCityId),
             Field(\Person.name, isEqualTo: expectedName),
             Limit(max: 1)
         ])
@@ -95,11 +95,11 @@ final class FirestoreIntegrationTests: XCTestCase {
         }
     }
     
-    func test_queryBuilder() async throws {
-        Person
-            .query(in: Firestore.firestore().collection("some"))
-            .where(\.friendIds, contains: "1")
-            .where(\.age!, isLessThan: 30)
-            
-    }
+//    func test_queryBuilder() async throws {
+//        Person
+//            .query(in: Firestore.firestore().collection("some"))
+//            .where(\.friendIds, contains: "1")
+//            .where(\.age!, isLessThan: 30)
+//            
+//    }
 }

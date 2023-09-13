@@ -24,7 +24,7 @@ public struct Field<Root: Queryable, RootValue, Value> {
     }
 }
 
-extension Field: QueryPredicate {
+extension Field: QueryablePredicate {
     public typealias Model = Root
     
     public var key: PartialKeyPath<Root> {

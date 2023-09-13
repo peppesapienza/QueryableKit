@@ -3,7 +3,7 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 public extension CollectionReference {
-    func query(_ predicates: [any QueryPredicate]) -> Query {
+    func query(_ predicates: [any QueryablePredicate]) -> Query {
         guard !predicates.isEmpty else { return self }
         
         let composer = FirestorePredicateComposer()
