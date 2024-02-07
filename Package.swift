@@ -1,6 +1,7 @@
 // swift-tools-version: 5.9
 
 import PackageDescription
+import CompilerPluginSupport
 
 let package = Package(
     name: "QueryableKit",
@@ -15,12 +16,13 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: .init(10, 0, 0))
+        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: .init(10, 14, 0)),
+        .package(url: "https://github.com/apple/swift-syntax", from: "509.0.0")
     ],
     targets: [
         .target(
             name: "QueryableCore",
-            dependencies: [],
+            dependencies: ["QueryableMacros"],
             path: "Sources/Core"
         ),
         .target(
@@ -36,6 +38,18 @@ let package = Package(
                 .linkedLibrary("c++"),
             ]
         ),
+
+        // MARK: Macro
+        .macro(
+            name: "QueryableMacros",
+            dependencies: [
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
+            ],
+            path: "Sources/Macro"
+        ),
+        
+        // MARK: Tests
         .testTarget(
             name: "CoreTests",
             dependencies: ["QueryableCore"]
@@ -44,6 +58,13 @@ let package = Package(
             name: "FirestoreTests",
             dependencies: ["FirestoreQueryable"],
             resources: [.copy("secrets/secrets.json")]
-        )
+        ),
+        .testTarget(
+            name: "MacroTests",
+            dependencies: [
+                "QueryableMacros",
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+            ]
+        ),
     ]
 )
