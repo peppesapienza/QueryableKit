@@ -44,7 +44,7 @@ public struct TypeNotSupported: Error, LocalizedError {
     }
 }
 
-public struct FieldMissing<Model: Queryable>: Error, LocalizedError {
+public struct FieldMissing<Model: QueryableModel>: Error, LocalizedError {
     let key: PartialKeyPath<Model>
     
     public var localizedDescription: String {

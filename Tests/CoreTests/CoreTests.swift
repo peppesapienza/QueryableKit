@@ -1,7 +1,7 @@
 import XCTest
 @testable import QueryableCore
 
-struct City: Queryable, Equatable {
+struct City: QueryableModel, Equatable {
     let name: String
     let population: Int
     let suburbs: [String]

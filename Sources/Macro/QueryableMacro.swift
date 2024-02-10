@@ -29,7 +29,7 @@ public struct QueryableMacro: MemberMacro {
             $0.bindings.compactMap { $0.pattern.as(IdentifierPatternSyntax.self)?.identifier }
         }
         
-        /// Returns the string path that corresponds to the provided key path, if one exists.
+        /// Returns the string path associated to the provided key path, if one exists.
         ///
         /// - Parameter path: The key path to convert to a string path.
         /// - Returns: The string path that corresponds to the provided key path, or `nil` if the key path cannot be converted to a string path.
@@ -44,12 +44,24 @@ public struct QueryableMacro: MemberMacro {
             }
             """
         }
-        
+                
         return [
             DeclSyntax(new)
         ]
     }
-    
+}
+
+extension QueryableMacro: ExtensionMacro {
+    public static func expansion(
+        of node: SwiftSyntax.AttributeSyntax,
+        attachedTo declaration: some SwiftSyntax.DeclGroupSyntax,
+        providingExtensionsOf type: some SwiftSyntax.TypeSyntaxProtocol,
+        conformingTo protocols: [SwiftSyntax.TypeSyntax],
+        in context: some SwiftSyntaxMacros.MacroExpansionContext
+    ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
+        let equatableExtension = try ExtensionDeclSyntax("extension \(type.trimmed): QueryableModel {}")
+        return [equatableExtension]
+    }
 }
 
 
