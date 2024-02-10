@@ -37,6 +37,9 @@ final class MyMacroTests: XCTestCase {
                     }
                 }
             }
+            
+            extension Some: QueryableModel {
+            }
             """,
             macros: testMacros
         )

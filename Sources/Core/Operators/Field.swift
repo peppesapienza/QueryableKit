@@ -1,6 +1,6 @@
-/// A `Field`  defines a predicate that can be used to compare a `Queryable` key path
+/// A `Field`  defines a predicate that can be used to compare a `QueryableModel` key path
 /// to a `Value` with a specified `Operator`.
-public struct Field<Root: Queryable, RootValue, Value> {
+public struct Field<Root: QueryableModel, RootValue, Value> {
     
     public enum Operator: String {
         case isEqualTo

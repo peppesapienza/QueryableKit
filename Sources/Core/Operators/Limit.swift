@@ -13,7 +13,7 @@ public struct Limit: QueryablePredicate {
     }
 }
 
-extension Never: Queryable {
+extension Never: QueryableModel {
     public static func field(_ path: PartialKeyPath<Never>) -> String? { nil }
     
     public init(from decoder: Decoder) throws {

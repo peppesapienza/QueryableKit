@@ -5,7 +5,7 @@ import FirebaseFirestore
 import FirebaseCore
 @testable import FirestoreQueryable
 
-struct Person: Queryable {
+struct Person: QueryableModel {
     let id: String
     let name: String
     let cityId: String

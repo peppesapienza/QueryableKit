@@ -1,6 +1,6 @@
 /// A `QueryablePredicate` provides a type-safe way to represent a condition
 /// that can be used to filter, sort and query your data.
-public protocol QueryablePredicate<Model> where Model: Queryable  {
+public protocol QueryablePredicate<Model> where Model: QueryableModel {
     associatedtype Model
     
     /// A `PartialKeyPath` that identifies the property of the `Model` that the predicate applies to.
