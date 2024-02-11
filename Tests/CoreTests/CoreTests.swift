@@ -1,26 +1,18 @@
 import XCTest
 @testable import QueryableCore
 
-struct City: QueryableModel, Equatable {
+@Queryable
+struct City: Equatable {
     let name: String
     let population: Int
     let suburbs: [String]
     
-    let missingField: Bool = false
+    let mustNotBeMapped: Bool = false
     
     enum CodingKeys: String, CodingKey {
         case name
         case population = "populationCount"
         case suburbs
-    }
-    
-    static func field(_ path: PartialKeyPath<City>) -> String? {
-        switch path {
-        case \.name: return CodingKeys.name.stringValue
-        case \.population: return CodingKeys.population.stringValue
-        case \.suburbs: return CodingKeys.suburbs.stringValue
-        default: return nil
-        }
     }
 }
 
@@ -42,10 +34,10 @@ final class QueryableTests: XCTestCase {
     }
     
     func test_whenFieldIsMissing_mustThrow_FieldMissing() throws {
-        XCTAssertThrowsError(try Field(\City.missingField, isEqualTo: false).field()) { error in
+        XCTAssertThrowsError(try Field(\City.mustNotBeMapped, isEqualTo: false).field()) { error in
             print(error.localizedDescription)
             let error = try! XCTUnwrap(error as? FieldMissing<City>)
-            XCTAssertEqual(error.key, \.missingField)
+            XCTAssertEqual(error.key, \.mustNotBeMapped)
         }
     }
 }
