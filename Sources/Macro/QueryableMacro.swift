@@ -2,13 +2,6 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 import SwiftCompilerPlugin
 
-//import QueryableMacros
-//
-//@attached(member)
-///// The `Queryable` macro defines a type that can be queried
-///// using predicates conforming to the `QueryablePredicate` protocol.
-//public macro Queryable() = #externalMacro(module: "QueryableMacros", type: "QueryableMacro")
-
 
 public struct QueryableMacro: MemberMacro {
     
@@ -53,12 +46,12 @@ public struct QueryableMacro: MemberMacro {
 
 extension QueryableMacro: ExtensionMacro {
     public static func expansion(
-        of node: SwiftSyntax.AttributeSyntax,
-        attachedTo declaration: some SwiftSyntax.DeclGroupSyntax,
-        providingExtensionsOf type: some SwiftSyntax.TypeSyntaxProtocol,
-        conformingTo protocols: [SwiftSyntax.TypeSyntax],
-        in context: some SwiftSyntaxMacros.MacroExpansionContext
-    ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
+        of node: AttributeSyntax,
+        attachedTo declaration: some DeclGroupSyntax,
+        providingExtensionsOf type: some TypeSyntaxProtocol,
+        conformingTo protocols: [TypeSyntax],
+        in context: some MacroExpansionContext
+    ) throws -> [ExtensionDeclSyntax] {
         let equatableExtension = try ExtensionDeclSyntax("extension \(type.trimmed): QueryableModel {}")
         return [equatableExtension]
     }

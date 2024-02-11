@@ -5,22 +5,13 @@ import FirebaseFirestore
 import FirebaseCore
 @testable import FirestoreQueryable
 
-struct Person: QueryableModel {
+@Queryable
+struct Person {
     let id: String
     let name: String
     let cityId: String
     let friendIds: [String]
     let age: Int?
-    
-    static func field(_ path: PartialKeyPath<Person>) -> String? {
-        switch path {
-        case \.name: return CodingKeys.name.stringValue
-        case \.cityId: return CodingKeys.cityId.stringValue
-        case \.friendIds: return CodingKeys.friendIds.stringValue
-        case \.age: return CodingKeys.age.stringValue
-        default: return nil
-        }
-    }
 }
 
 struct FirebaseLoader {

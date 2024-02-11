@@ -2,36 +2,40 @@ import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
 
-#if canImport(QueryableMacro)
 @testable import QueryableMacros
 
 let testMacros: [String: Macro.Type] = [
     "Queryable": QueryableMacro.self,
 ]
-#endif
+
+let backslash = QueryableMacro.backslashToken
 
 final class MyMacroTests: XCTestCase {
-    func testExpansionProcudesExpectedOutput() throws {
-#if canImport(QueryableMacro)
+    
+    func test_givenModelWithNoCustomCodingKeys_allPropertiesMustBeAddedInField() throws {
         assertMacroExpansion(
             """
             @Queryable
-            struct Some: Codable {
+            struct Some {
                 let age: Int
                 let firstName: String
+                var isLoggedIn: Bool = false
             }
             """,
             expandedSource: """
-            struct Some: Codable {
+            struct Some {
                 let age: Int
                 let firstName: String
+                var isLoggedIn: Bool = false
             
                 static func field(_ path: PartialKeyPath<Self>) -> String? {
                     switch path {
-                    case \(QueryableMacro.backslashToken).age:
+                    case \(backslash).age:
                         return CodingKeys.age.stringValue
-                    case \(QueryableMacro.backslashToken).firstName:
+                    case \(backslash).firstName:
                         return CodingKeys.firstName.stringValue
+                    case \(backslash).isLoggedIn:
+                        return CodingKeys.isLoggedIn.stringValue
                     default:
                         return nil
                     }
@@ -43,9 +47,6 @@ final class MyMacroTests: XCTestCase {
             """,
             macros: testMacros
         )
-#else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-#endif
     }
 
 }
