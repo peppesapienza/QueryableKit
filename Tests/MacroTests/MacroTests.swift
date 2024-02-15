@@ -49,6 +49,47 @@ final class QueryableMacroTests: XCTestCase {
         )
     }
     
+    func test_givenModelWithComputedProperties_allPropertiesExceptComputedMustBeAddedInField() throws {
+        assertMacroExpansion(
+            """
+            @Queryable
+            struct Some {
+                var foo: Int {
+                    willSet { }
+                }
+                var bar: Bool { true }
+                var jaz: String {
+                    get { "" }
+                }
+            }
+            """,
+            expandedSource: """
+            struct Some {
+                var foo: Int {
+                    willSet { }
+                }
+                var bar: Bool { true }
+                var jaz: String {
+                    get { "" }
+                }
+            
+                static func field(_ path: PartialKeyPath<Self>) -> String? {
+                    switch path {
+                    case \(backslash).foo:
+                        return CodingKeys.foo.stringValue
+                    default:
+                        return nil
+                    }
+                }
+            }
+            
+            extension Some: QueryableModel {
+            }
+            """,
+            macros: testMacros
+        )
+    }
+    
     func test_givenModelImplementsCustomCodingKey_onlyDefinedPropertiesMustBeAddedInField() throws {
         assertMacroExpansion(
             """
@@ -103,4 +144,3 @@ final class QueryableMacroTests: XCTestCase {
     }
 
 }
-

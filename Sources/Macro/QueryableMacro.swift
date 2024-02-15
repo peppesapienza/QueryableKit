@@ -12,13 +12,22 @@ public struct QueryableMacro: MemberMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
-        var propertiesToMap = declaration.varNames
+        var variables = declaration.memberBlock.variables
+                
+        let codingKeys = declaration
+            .casesNameOfEnum(conformingTo: CodingKey.self)?
+            .compactMap { $0.text } ?? []
         
-        if let codingKeys = declaration.casesNameOfEnum(conformingTo: CodingKey.self) {
-            propertiesToMap.removeAll(where: { structProp in
-                !codingKeys.contains(where: { $0.text == structProp.text })
-            })
-        }
+        variables.removeAll(where: { variable in
+            // If the property is a getter it should immediately be removed.
+            if variable.isGetter { return true }
+            
+            // Then checks the presence of a custom CodingKey implementation
+            // and removes all variables that are not defined in there.
+            guard !codingKeys.isEmpty else { return false }
+            let names = variable.identifiers.map { $0.text }
+            return !names.contains(where: { codingKeys.contains($0) })
+        })
         
         /// Returns the string path associated to the provided key path, if one exists.
         ///
@@ -26,14 +35,20 @@ public struct QueryableMacro: MemberMacro {
         /// - Returns: The string path that corresponds to the provided key path, or `nil` if the key path cannot be converted to a string path.
         
         let new = try FunctionDeclSyntax("static func field(_ path: PartialKeyPath<Self>) -> String?") {
-            """
-            switch path {
-            \(raw: propertiesToMap.map({ token in
-                "case \(backslashToken).\(token): return CodingKeys.\(token).stringValue"
-            }).joined(separator: "\n"))
-            default: return nil
+            if variables.isEmpty {
+                """
+                return nil
+                """
+            } else {
+                """
+                switch path {
+                \(raw: variables.flatMap { $0.identifiers }.map({ token in
+                    "case \(backslashToken).\(token): return CodingKeys.\(token).stringValue"
+                }).joined(separator: "\n"))
+                default: return nil
+                }
+                """
             }
-            """
         }
         
         return [
