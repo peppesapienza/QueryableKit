@@ -28,7 +28,7 @@ final class QueryableMacroTests: XCTestCase {
                 let firstName: String
                 var isLoggedIn: Bool = false
             
-                static func field(_ path: PartialKeyPath<Self>) -> String? {
+                public static func field(_ path: PartialKeyPath<Self>) -> String? {
                     switch path {
                     case \(backslash).age:
                         return CodingKeys.age.stringValue
@@ -73,7 +73,7 @@ final class QueryableMacroTests: XCTestCase {
                     get { "" }
                 }
             
-                static func field(_ path: PartialKeyPath<Self>) -> String? {
+                public static func field(_ path: PartialKeyPath<Self>) -> String? {
                     switch path {
                     case \(backslash).foo:
                         return CodingKeys.foo.stringValue
@@ -122,7 +122,7 @@ final class QueryableMacroTests: XCTestCase {
                     case suburbs
                 }
 
-                static func field(_ path: PartialKeyPath<Self>) -> String? {
+                public static func field(_ path: PartialKeyPath<Self>) -> String? {
                     switch path {
                     case \(backslash).name:
                         return CodingKeys.name.stringValue
