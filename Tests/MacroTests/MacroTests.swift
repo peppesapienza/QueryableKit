@@ -61,6 +61,10 @@ final class QueryableMacroTests: XCTestCase {
                 var jaz: String {
                     get { "" }
                 }
+                var fooBar: URL? {
+                    guard let fooBar else { return nil }
+                    return fooBar
+                }
             }
             """,
             expandedSource: """
@@ -71,6 +75,10 @@ final class QueryableMacroTests: XCTestCase {
                 var bar: Bool { true }
                 var jaz: String {
                     get { "" }
+                }
+                var fooBar: URL? {
+                    guard let fooBar else { return nil }
+                    return fooBar
                 }
             
                 public static func field(_ path: PartialKeyPath<Self>) -> String? {

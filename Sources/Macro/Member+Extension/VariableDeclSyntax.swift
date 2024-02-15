@@ -3,7 +3,7 @@ import SwiftSyntax
 extension VariableDeclSyntax {
     var isGetter: Bool {
         let accessors = bindings.compactMap { $0.accessorBlock }
-                
+        
         if let first = accessors.first?.accessors,
            let accessorDeclList = first.as(AccessorDeclListSyntax.self),
            accessorDeclList.count == 1,
@@ -13,9 +13,10 @@ extension VariableDeclSyntax {
             return true
         }
         
+        // Should be true when a property is a get-only defined withouth accessor decl.
+        // var foo: Int { 123 }
         if let first = accessors.first?.accessors,
-           let codeBlockList = first.as(CodeBlockItemListSyntax.self),
-           codeBlockList.count == 1
+           let codeBlockList = first.as(CodeBlockItemListSyntax.self)
         {
             return true
         }
