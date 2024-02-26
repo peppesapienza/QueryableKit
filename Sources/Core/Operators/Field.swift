@@ -67,3 +67,25 @@ public extension Field where RootValue: Comparable, Value == RootValue {
         self.init(keyPath: key, operator: .isLessThanOrEqualTo, value: value)
     }
 }
+
+// MARK: Overloads
+
+public func ==<Root, Value>(lhs: KeyPath<Root, Value>, rhs: Value) -> Field<Root, Value, Value> where Value: Equatable {
+    Field(lhs, isEqualTo: rhs)
+}
+
+public func >=<Root, Value>(lhs: KeyPath<Root, Value>, rhs: Value) -> Field<Root, Value, Value> where Value: Comparable {
+    Field(lhs, isGreaterThanOrEqualTo: rhs)
+}
+
+public func ><Root, Value>(lhs: KeyPath<Root, Value>, rhs: Value) -> Field<Root, Value, Value> where Value: Comparable {
+    Field(lhs, isGreaterThan: rhs)
+}
+
+public func <=<Root, Value>(lhs: KeyPath<Root, Value>, rhs: Value) -> Field<Root, Value, Value> where Value: Comparable {
+    Field(lhs, isLessThanOrEqualTo: rhs)
+}
+
+public func <<Root, Value>(lhs: KeyPath<Root, Value>, rhs: Value) -> Field<Root, Value, Value> where Value: Comparable {
+    Field(lhs, isLessThan: rhs)
+}

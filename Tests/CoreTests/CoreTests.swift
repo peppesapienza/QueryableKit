@@ -40,4 +40,13 @@ final class QueryableTests: XCTestCase {
             XCTAssertEqual(error.key, \.mustNotBeMapped)
         }
     }
+    
+    func test_fieldOverloads_produceExpectedOperator() throws {
+        XCTAssertEqual((\City.name == "").operator, .isEqualTo)
+        XCTAssertEqual((\City.population > 0).operator, .isGreaterThan)
+        XCTAssertEqual((\City.population >= 0).operator, .isGreaterThanOrEqualTo)
+        XCTAssertEqual((\City.population < 0).operator, .isLessThan)
+        XCTAssertEqual((\City.population <= 0).operator, .isLessThanOrEqualTo)
+    }
+    
 }
