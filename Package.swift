@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: .init(10, 14, 0)),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: .init(11, 1, 0)),
         .package(url: "https://github.com/apple/swift-syntax", from: "509.1.1")
     ],
     targets: [
@@ -31,7 +31,6 @@ let package = Package(
                 "QueryableCore",
                 .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
                 .product(name: "FirebaseFirestore", package: "firebase-ios-sdk"),
-                .product(name: "FirebaseFirestoreSwift", package: "firebase-ios-sdk"),
             ],
             path: "Sources/Firestore",
             linkerSettings: [

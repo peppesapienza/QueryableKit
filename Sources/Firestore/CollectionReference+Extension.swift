@@ -1,6 +1,5 @@
 import QueryableCore
 import FirebaseFirestore
-import FirebaseFirestoreSwift
 
 public extension CollectionReference {
     func query(_ predicates: [any QueryablePredicate]) -> Query {

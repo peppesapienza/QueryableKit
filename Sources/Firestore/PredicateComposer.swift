@@ -1,6 +1,5 @@
 import QueryableCore
 import FirebaseFirestore
-import FirebaseFirestoreSwift
 
 struct FirestorePredicateComposer: PredicateVisitor {
     

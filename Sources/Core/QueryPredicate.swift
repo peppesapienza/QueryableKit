@@ -4,7 +4,7 @@ public protocol QueryablePredicate<Model> where Model: QueryableModel {
     associatedtype Model
     
     /// A `PartialKeyPath` that identifies the property of the `Model` that the predicate applies to.
-    var key: PartialKeyPath<Model> { get }
+    var key: PartialKeyPath<Model>? { get }
     
     func visit<Visitor>(using visitor: Visitor, in context: inout Visitor.Context) throws where Visitor: PredicateVisitor
 }
@@ -26,6 +26,10 @@ extension QueryablePredicate {
     /// - Returns: The string path that corresponds to the key path being queried, or `nil` if the key path cannot be converted to a string path.
     /// - Throws: A `FieldMissing` error if the key cannot be converted to a string path.
     public func field() throws -> String {
+        guard let key else {
+            fatalError("field() must not be called on a predicate without key")
+        }
+        
         guard let field = Model.field(key) else {
             throw FieldMissing(key: key)
         }

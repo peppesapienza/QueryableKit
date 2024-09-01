@@ -5,7 +5,7 @@ public struct Sort<Root: QueryableModel, Value: Comparable>: QueryablePredicate 
     public let keyPath: KeyPath<Root, Value>
     public let descending: Bool
     
-    public var key: PartialKeyPath<Root> { keyPath }
+    public var key: PartialKeyPath<Root>? { keyPath }
     
     /// Initializes a new instance of `Sort` with the given keyPath and sort direction.
     ///

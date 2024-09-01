@@ -1,11 +1,11 @@
 public struct Limit: QueryablePredicate {
-    public typealias Model = Never
+    public typealias Model = EmptyQueryableModel
     
     public init(max: Int) {
         self.max = max
     }
     
-    public let key: PartialKeyPath<Never> = { \.id }()
+    public let key: PartialKeyPath<Model>? = nil
     public let max: Int
     
     public func visit<Visitor>(using visitor: Visitor, in context: inout Visitor.Context) throws where Visitor: PredicateVisitor {
@@ -13,8 +13,10 @@ public struct Limit: QueryablePredicate {
     }
 }
 
-extension Never: QueryableModel {
-    public static func field(_ path: PartialKeyPath<Never>) -> String? { nil }
+public struct EmptyQueryableModel: QueryableModel {
+    public static func field(_ path: PartialKeyPath<EmptyQueryableModel>) -> String? {
+        nil
+    }
     
     public init(from decoder: Decoder) throws {
         fatalError()

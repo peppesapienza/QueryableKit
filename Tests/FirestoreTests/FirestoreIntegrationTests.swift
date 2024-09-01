@@ -1,6 +1,5 @@
 import XCTest
 import QueryableCore
-import FirebaseFirestoreSwift
 import FirebaseFirestore
 import FirebaseCore
 @testable import FirestoreQueryable
