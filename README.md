@@ -3,13 +3,26 @@
 QueryableKit allows you to write and perform type-safe Firestore queries. 
 
 ```swift
-try await firestore().collection("suburbs").query([
+import QueryableCore
+import QueryableFirestore
+
+@Queryable 
+struct Suburb {
+    let id: String
+    let city: String
+    let population: Int
+    let neighbours: [Int]
+    let distanceFromCityCenter: Double
+}
+
+let documents = try await Firestore.firestore().collection("suburbs").query([
   \Suburb.city == "Melbourne",
   \Suburb.population >= 50_000,
   Field(\Suburb.neighbours, isAnyOf: [3083,3000]),
   Sort(by: \Suburb.distanceFromCityCenter),
   Limit(max: 3)
 ])
+.getDocuments()
 ```
 
 ## Installation
