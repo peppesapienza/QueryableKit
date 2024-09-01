@@ -16,7 +16,7 @@ extension VariableDeclSyntax {
         // Should be true when a property is a get-only defined withouth accessor decl.
         // var foo: Int { 123 }
         if let first = accessors.first?.accessors,
-           let codeBlockList = first.as(CodeBlockItemListSyntax.self)
+           first.as(CodeBlockItemListSyntax.self) != nil
         {
             return true
         }

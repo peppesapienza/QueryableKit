@@ -12,7 +12,6 @@ extension DeclGroupSyntax {
                 
                 return types.contains { $0.type.as(IdentifierTypeSyntax.self)?.name.text == "\(enumType.self)" }
             })?
-            .as(MemberBlockItemSyntax.self)?
             .decl.as(EnumDeclSyntax.self)?
             .memberBlock.members
             .compactMap {
